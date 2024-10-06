@@ -7,6 +7,15 @@ class SimpleLLM:
     
     def get_response(self, user_input):
         user_input = user_input.lower().strip()
+
+        # Try to handle it as a math operation first
+        try:
+            # Evaluate any simple math expressions entered
+            math_result = eval(user_input, {"__builtins__": None}, {})
+            if isinstance(math_result, (int, float)):
+                return f"The result is {math_result}"
+        except:
+            pass  # If eval fails, move on to matching responses
         
         # First, try to find a close match with a high cutoff
         close_match = difflib.get_close_matches(user_input, self.responses.keys(), n=1, cutoff=0.8)
@@ -32,7 +41,7 @@ class SimpleLLM:
 
 def main():
     print("\n***************************************************************\n")
-    print("Hello! I'm programmed to answer 120 different prompts. Type 'help' to see what you can ask, or 'exit' to quit.")
+    print("Hello! I'm programmed to answer "+str(len(responses))+" different prompts. Type 'help' to see what you can ask, or 'exit' to quit.")
     print("\n***************************************************************\n")
     model = SimpleLLM()
     
